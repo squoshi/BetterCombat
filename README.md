@@ -321,7 +321,6 @@ Content:
 }
 ```
 
-
 # ⛓ Mod compatibility
 
 This mod has been created in the spirit of maximal compatibility. However since some core mechanics are overridden, mods trying to change the same thing will never be compatible.
