@@ -91,7 +91,7 @@ if(project.hasProperty('release_type')) {
     curseforge {
         apiKey = System.getenv("CURSEFORGE_API_KEY")
         project {
-            id = '639842'
+            id = System.getenv("CURSEFORGE_PROJECT_ID")
             changelog = changelog_last_section()
             changelogType = 'markdown'
             releaseType = release_type
@@ -116,11 +116,11 @@ if(project.hasProperty('release_type')) {
 
     modrinth {
         token = System.getenv("MODRINTH_API_KEY")
-        projectId = "better-combat" // This can be the project ID or the slug. Either will work!
+        projectId = System.getenv("MODRINTH_PROJECT_ID") // This can be the project ID or the slug. Either will work!
         changelog = changelog_last_section()
         versionName = "${project.version}"
         versionNumber = "${project.version}-forge" // You don't need to set this manually. Will fail if Modrinth has this version already
-        versionType = release_type // This is the default -- can also be `beta` or `alpha`
+        versionType = release_type // This is the default -- can also be `beta` or `alpha`\
         uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
         gameVersions = ["${rootProject.minecraft_version}", "1.20"] // Must be an array, even with only one version
         loaders = ["forge"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
