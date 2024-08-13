@@ -230,7 +230,7 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity imple
             if (!FirstPersonMode.isFirstPersonPass()) {
                 switch (partName) {
                     case "rightArm", "leftArm" -> {
-                        if (!mainHandItemPose.lastAnimationUsesBodyChannel && player.isSneaking()) {
+                        if (!mainHandItemPose.lastAnimationUsesBodyChannel && player.isInSneakingPose()) {
                             offsetY += 3;
                         }
                     }
