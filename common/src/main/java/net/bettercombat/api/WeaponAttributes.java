@@ -300,7 +300,35 @@ public final class WeaponAttributes {
         /**
          * Fulfilled if the player is not riding any entity
          */
-        NOT_MOUNTED
+        NOT_MOUNTED,
+        /**
+         * Fulfilled if the player is in the air
+         */
+        IN_AIR,
+        /**
+         * Fulfilled if the player is on the ground
+         */
+        ON_GROUND,
+        /**
+         * Fulfilled if the player is moving forward
+         */
+        MOVING_FORWARD,
+        /**
+         * Fulfilled if the player is moving backward
+         */
+        MOVING_BACKWARD,
+        /**
+         * Fulfilled if the player is strafing left
+         */
+        STRAFING_LEFT,
+        /**
+         * Fulfilled if the player is strafing right
+         */
+        STRAFING_RIGHT,
+        /**
+         * Fulfilled if the player is sprinting
+         */
+        SPRINTING,
     }
 
     /**

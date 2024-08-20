@@ -149,6 +149,27 @@ public class PlayerAttackHelper {
             case NOT_MOUNTED -> {
                 return player.getVehicle() == null;
             }
+            case IN_AIR -> {
+                return !player.isOnGround();
+            }
+            case ON_GROUND -> {
+                return player.isOnGround();
+            }
+            case MOVING_FORWARD -> {
+                return player.forwardSpeed > 0;
+            }
+            case MOVING_BACKWARD -> {
+                return player.forwardSpeed < 0;
+            }
+            case STRAFING_LEFT -> {
+                return player.sidewaysSpeed < 0;
+            }
+            case STRAFING_RIGHT -> {
+                return player.sidewaysSpeed > 0;
+            }
+            case SPRINTING -> {
+                return player.isSprinting();
+            }
         }
         return true;
     }
