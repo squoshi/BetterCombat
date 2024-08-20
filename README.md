@@ -12,6 +12,11 @@ Easy, spectacular and fun melee combat system we know from Minecraft Dungeons.
 
 Add unique behaviour to your weapon, or just reuse a preset, using data files (aka JSON API).
 
+🎯 Project goals
+- Replicate Minecraft Dungeons combat experience, by reworking the melee combat system
+- Providing generic weapon capabilities, os other mods to build on top of Better Combat
+- Adding no mod specific features or content, to avoid conflicts
+
 # ⭐️ Features
 
 ## Primary features
@@ -315,7 +320,6 @@ Content:
   "parent": "bettercombat:claymore"
 }
 ```
-
 
 # ⛓ Mod compatibility
 

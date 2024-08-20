@@ -50,7 +50,7 @@ public class WeaponAttributesFallback {
         for (var entry: attributes.entries()) {
             var attribute = entry.getKey();
             var attributeId = Registries.ATTRIBUTE.getId(attribute);
-            if (attributeId.equals(searchedAttributeId)) {
+            if (attributeId != null && attributeId.equals(searchedAttributeId)) {
                 return true;
             }
         }

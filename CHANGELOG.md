@@ -1,7 +1,11 @@
-# 1.8.6
+# 1.8.7
 
 - Port to 1.20.4, thank you to @ellet0, #332
 - Improve server side distance check, against cheats (configurable)
+
+# 1.8.6
+- Fix fallback compat causing some crashes
+- Fix some sneaking related render glitches
 
 # 1.8.5
 
