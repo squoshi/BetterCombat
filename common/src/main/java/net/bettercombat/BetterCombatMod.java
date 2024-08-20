@@ -11,47 +11,32 @@ import net.bettercombat.config.ServerConfigWrapper;
 import net.bettercombat.logic.WeaponAttributesFallback;
 import net.bettercombat.logic.WeaponRegistry;
 import net.bettercombat.network.ServerNetwork;
-import net.bettercombat.utils.SoundHelper;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
 import net.tinyconfig.ConfigManager;
 import org.slf4j.Logger;
 
-public class BetterCombat implements ModInitializer {
+public class BetterCombatMod {
     static final Logger LOGGER = LogUtils.getLogger();
-    public static final String MODID = "bettercombat";
+    public static final String ID = "bettercombat";
     public static ServerConfig config;
     private static FallbackConfig fallbackDefault = FallbackConfig.createDefault();
-    public static ConfigManager<FallbackConfig> fallbackConfig = new ConfigManager<FallbackConfig>
+    public static ConfigManager<FallbackConfig> fallbackConfig = new ConfigManager<>
             ("fallback_compatibility", fallbackDefault)
             .builder()
-            .setDirectory(MODID)
+            .setDirectory(ID)
             .sanitize(true)
             .build();
 
-    @Override
-    public void onInitialize() {
+    public static void init() {
         AutoConfig.register(ServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
         // Intuitive way to load a config :)
         config = AutoConfig.getConfigHolder(ServerConfigWrapper.class).getConfig().server;
         loadFallbackConfig();
         CompatibilityFlags.initialize();
         ServerNetwork.initializeHandlers();
-        ServerLifecycleEvents.SERVER_STARTED.register((minecraftServer) -> {
-            WeaponRegistry.loadAttributes(minecraftServer.getResourceManager());
-            if (config.fallback_compatibility_enabled) {
-                WeaponAttributesFallback.initialize();
-            }
-            WeaponRegistry.encodeRegistry();
-        });
-
-        if(Platform.Fabric) {
-            // forge locks the registries so this would crash
-            SoundHelper.registerSounds();
-        }
     }
 
-    private void loadFallbackConfig() {
+    private static void loadFallbackConfig() {
         fallbackConfig.load();
         if (fallbackConfig.value == null) {
             // Most likely corrupt config
@@ -61,5 +46,13 @@ public class BetterCombat implements ModInitializer {
             fallbackConfig.value = FallbackConfig.migrate(fallbackConfig.value, FallbackConfig.createDefault());
         }
         fallbackConfig.save();
+    }
+
+    public static void loadWeaponAttributes(MinecraftServer server) {
+        WeaponRegistry.loadAttributes(server.getResourceManager());
+        if (config.fallback_compatibility_enabled) {
+            WeaponAttributesFallback.initialize();
+        }
+        WeaponRegistry.encodeRegistry();
     }
 }

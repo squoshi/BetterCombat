@@ -1,6 +1,6 @@
 package net.bettercombat.client.collision;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.WeaponAttributes.Attack;
 import net.bettercombat.api.client.AttackRangeExtensions;
 import net.bettercombat.logic.TargetHelper;
@@ -85,7 +85,7 @@ public class TargetFinder {
     }
 
     public static List<Entity> getInitialTargets(PlayerEntity player, Entity cursorTarget, double attackRange) {
-        Box box = player.getBoundingBox().expand(attackRange * BetterCombat.config.target_search_range_multiplier + 1.0);
+        Box box = player.getBoundingBox().expand(attackRange * BetterCombatMod.config.target_search_range_multiplier + 1.0);
         List<Entity> entities = player
                 .getWorld()
                 .getOtherEntities(player, box, entity ->  !entity.isSpectator() && entity.canHit())
@@ -148,7 +148,7 @@ public class TargetFinder {
                                 && ((attackAngle == 0)
                                     || (CollisionHelper.angleBetween(positionVector, orientation) <= maxAngleDif
                                     || CollisionHelper.angleBetween(distanceVector, orientation) <= maxAngleDif))
-                                && (BetterCombat.config.allow_attacking_thru_walls
+                                && (BetterCombatMod.config.allow_attacking_thru_walls
                                     || rayContainsNoObstacle(origin, origin.add(distanceVector))
                                     || rayContainsNoObstacle(origin, origin.add(positionVector)));
                     })

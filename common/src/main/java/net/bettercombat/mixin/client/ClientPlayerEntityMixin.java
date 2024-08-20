@@ -1,6 +1,6 @@
 package net.bettercombat.mixin.client;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.MinecraftClient_BetterCombat;
 import net.bettercombat.utils.MathHelper;
 import net.minecraft.client.MinecraftClient;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientPlayerEntityMixin {
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick(ZF)V", shift = At.Shift.AFTER))
     private void tickMovement_ModifyInput(CallbackInfo ci) {
-        var config = BetterCombat.config;
+        var config = BetterCombatMod.config;
         var multiplier = Math.min(Math.max(config.movement_speed_while_attacking, 0.0), 1.0);
 //        System.out.println("Multiplier " + multiplier);
         if (multiplier == 1) {

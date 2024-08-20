@@ -1,6 +1,6 @@
 package net.bettercombat.logic;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.config.FallbackConfig;
 import net.bettercombat.utils.PatternMatching;
 import net.minecraft.entity.EquipmentSlot;
@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class WeaponAttributesFallback {
     public static void initialize() {
-        var config = BetterCombat.fallbackConfig.value;
+        var config = BetterCombatMod.fallbackConfig.value;
         for(var itemId: Registries.ITEM.getIds()) {
             var item = Registries.ITEM.get(itemId);
             if (PatternMatching.matches(itemId.toString(), config.blacklist_item_id_regex)) {

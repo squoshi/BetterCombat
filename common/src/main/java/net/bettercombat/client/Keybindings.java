@@ -5,7 +5,7 @@ import net.minecraft.client.util.InputUtil;
 
 import java.util.List;
 
-public class BetterCombatKeybindings {
+public class Keybindings {
     public static KeyBinding feintKeyBinding;
     public static KeyBinding toggleMineKeyBinding;
     public static List<KeyBinding> all;

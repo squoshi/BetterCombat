@@ -4,12 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.mojang.logging.LogUtils;
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.AttributesContainer;
 import net.bettercombat.api.WeaponAttributes;
 import net.bettercombat.api.WeaponAttributesHelper;
 import net.bettercombat.network.Packets;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -138,7 +137,7 @@ public class WeaponRegistry {
 
         var gson = new Gson();
         var json = gson.toJson(registrations);
-        if (BetterCombat.config.weapon_registry_logging) {
+        if (BetterCombatMod.config.weapon_registry_logging) {
             LOGGER.info("Weapon Attribute registry loaded: " + json);
         }
 
@@ -160,7 +159,7 @@ public class WeaponRegistry {
             json = json.concat(buffer.readString());
         }
         LOGGER.info("Decoded Weapon Attribute registry in " + chunkCount + " string chunks");
-        if (BetterCombat.config.weapon_registry_logging) {
+        if (BetterCombatMod.config.weapon_registry_logging) {
             LOGGER.info("Weapon Attribute registry received: " + json);
         }
         var gson = new Gson();

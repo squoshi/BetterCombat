@@ -19,10 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "net.bettercombat.client.BetterCombatClient"
+      "net.bettercombat.fabric.client.FabricClientMod"
     ],
     "main": [
-      "net.bettercombat.BetterCombat"
+      "net.bettercombat.fabric.FabricMod"
     ],
     "modmenu": [
       "net.bettercombat.fabric.client.ModMenuIntegration"

@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.mojang.logging.LogUtils;
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.logic.PlayerAttackHelper;
 import net.bettercombat.logic.PlayerAttackProperties;
 import net.bettercombat.logic.TargetHelper;
@@ -46,7 +46,7 @@ public class ServerNetwork {
     private static final UUID SWEEPING_MODIFIER_ID = UUID.randomUUID();
 
     public static void initializeHandlers() {
-        configSerialized = Packets.ConfigSync.serialize(BetterCombat.config);
+        configSerialized = Packets.ConfigSync.serialize(BetterCombatMod.config);
         ServerPlayConnectionEvents.JOIN.register( (handler, sender, server) -> {
             sender.sendPacket(Packets.WeaponRegistrySync.ID, WeaponRegistry.getEncodedRegistry().write());
             sender.sendPacket(Packets.ConfigSync.ID, (new Packets.ConfigSync(configSerialized)).write());
@@ -130,12 +130,12 @@ public class ServerNetwork {
 
                     SoundHelper.playSound(world, player, attack.swingSound());
 
-                    if (BetterCombat.config.allow_reworked_sweeping && request.entityIds().length > 1) {
+                    if (BetterCombatMod.config.allow_reworked_sweeping && request.entityIds().length > 1) {
                         double multiplier = 1.0
-                                - (BetterCombat.config.reworked_sweeping_maximum_damage_penalty / BetterCombat.config.reworked_sweeping_extra_target_count)
-                                * Math.min(BetterCombat.config.reworked_sweeping_extra_target_count, request.entityIds().length - 1);
+                                - (BetterCombatMod.config.reworked_sweeping_maximum_damage_penalty / BetterCombatMod.config.reworked_sweeping_extra_target_count)
+                                * Math.min(BetterCombatMod.config.reworked_sweeping_extra_target_count, request.entityIds().length - 1);
                         int sweepingLevel = EnchantmentHelper.getLevel(Enchantments.SWEEPING, hand.itemStack());
-                        double sweepingSteps = BetterCombat.config.reworked_sweeping_enchant_restores / ((double)Enchantments.SWEEPING.getMaxLevel());
+                        double sweepingSteps = BetterCombatMod.config.reworked_sweeping_enchant_restores / ((double)Enchantments.SWEEPING.getMaxLevel());
                         multiplier += sweepingLevel * sweepingSteps;
                         multiplier = Math.min(multiplier, 1);
                         sweepingModifiers.put(
@@ -144,19 +144,19 @@ public class ServerNetwork {
                         // System.out.println("Applied sweeping multiplier " + multiplier + " , sweepingSteps " + sweepingSteps + " , enchant bonus: " + (sweepingLevel * sweepingSteps));
                         player.getAttributes().addTemporaryModifiers(sweepingModifiers);
 
-                        boolean playEffects = !BetterCombat.config.reworked_sweeping_sound_and_particles_only_for_swords
+                        boolean playEffects = !BetterCombatMod.config.reworked_sweeping_sound_and_particles_only_for_swords
                                 || (hand.itemStack().getItem() instanceof SwordItem);
-                        if (BetterCombat.config.reworked_sweeping_plays_sound && playEffects) {
+                        if (BetterCombatMod.config.reworked_sweeping_plays_sound && playEffects) {
                             world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0f, 1.0f);
                         }
-                        if (BetterCombat.config.reworked_sweeping_emits_particles && playEffects) {
+                        if (BetterCombatMod.config.reworked_sweeping_emits_particles && playEffects) {
                             player.spawnSweepAttackParticles();
                         }
                     }
                 }
 
                 var attackCooldown = PlayerAttackHelper.getAttackCooldownTicksCapped(player);
-                var knockbackMultiplier = BetterCombat.config.knockback_reduced_for_fast_attacks
+                var knockbackMultiplier = BetterCombatMod.config.knockback_reduced_for_fast_attacks
                         ? MathHelper.clamp(attackCooldown / 12.5F, 0.1F, 1F)
                         : 1F;
                 var lastAttackedTicks = ((LivingEntityAccessor)player).getLastAttackedTicks();
@@ -165,7 +165,7 @@ public class ServerNetwork {
                 }
 
 
-                var validationRangeSquared = range * range * BetterCombat.config.target_search_range_multiplier;
+                var validationRangeSquared = range * range * BetterCombatMod.config.target_search_range_multiplier;
                 for (int entityId: request.entityIds()) {
                     // getEntityById(entityId);
                     boolean isBossPart = false;
@@ -181,7 +181,7 @@ public class ServerNetwork {
                         continue;
                     }
                     if (entity instanceof LivingEntity livingEntity) {
-                        if (BetterCombat.config.allow_fast_attacks) {
+                        if (BetterCombatMod.config.allow_fast_attacks) {
                             livingEntity.timeUntilRegen = 0;
                         }
                         if (knockbackMultiplier != 1F) {
@@ -196,7 +196,7 @@ public class ServerNetwork {
                         handler.onPlayerInteractEntity(vanillaAttackPacket);
                     } else {
                         // System.out.println("HIT - B entity: " + entity.getEntityName() + " id: " + entity.getId() + " class: " + entity.getClass());
-                        if (!BetterCombat.config.server_target_range_validation
+                        if (!BetterCombatMod.config.server_target_range_validation
                                 || player.squaredDistanceTo(entity) <= validationRangeSquared) {
                             if (entity instanceof ItemEntity || entity instanceof ExperienceOrbEntity || entity instanceof PersistentProjectileEntity || entity == player) {
                                 handler.disconnect(Text.translatable("multiplayer.disconnect.invalid_entity_attacked"));

@@ -1,6 +1,6 @@
 package net.bettercombat.mixin.client;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.logic.PlayerAttackHelper;
 import net.bettercombat.mixin.LivingEntityAccessor;
 import net.minecraft.client.MinecraftClient;
@@ -25,7 +25,7 @@ public class ClientPlayerInteractionManagerMixin {
             var player = client.player;
             var cooldownLength = PlayerAttackHelper.getAttackCooldownTicksCapped(player); // `getAttackCooldownProgressPerTick` should be called `getAttackCooldownLengthTicks`
             float typicalUpswing = 0.5F;
-            int reducedCooldown = Math.round(cooldownLength * typicalUpswing * BetterCombat.config.upswing_multiplier);
+            int reducedCooldown = Math.round(cooldownLength * typicalUpswing * BetterCombatMod.config.upswing_multiplier);
             ((LivingEntityAccessor)player).setLastAttackedTicks(reducedCooldown);
         } catch (Exception ignored) { } // We may get random exceptions when trying to access weapon cooldown
     }

@@ -1,7 +1,7 @@
 package net.bettercombat.network;
 
 import com.google.gson.Gson;
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.config.ServerConfig;
 import net.bettercombat.logic.AnimatedHand;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -25,7 +25,7 @@ public class Packets {
             return ids;
         }
 
-        public static Identifier ID = new Identifier(BetterCombat.MODID, "c2s_request_attack");
+        public static Identifier ID = new Identifier(BetterCombatMod.ID, "c2s_request_attack");
         public static boolean UseVanillaPacket = true;
         public PacketByteBuf write() {
             PacketByteBuf buffer = PacketByteBufs.create();
@@ -46,7 +46,7 @@ public class Packets {
     }
 
     public record AttackAnimation(int playerId, AnimatedHand animatedHand, String animationName, float length, float upswing) {
-        public static Identifier ID = new Identifier(BetterCombat.MODID, "attack_animation");
+        public static Identifier ID = new Identifier(BetterCombatMod.ID, "attack_animation");
         public static String StopSymbol = "!STOP!";
         public static AttackAnimation stop(int playerId, int length) { return new AttackAnimation(playerId, AnimatedHand.MAIN_HAND, StopSymbol, length, 0); }
 
@@ -71,7 +71,7 @@ public class Packets {
     }
 
     public record AttackSound(double x, double y, double z, String soundId, float volume, float pitch, long seed) {
-        public static Identifier ID = new Identifier(BetterCombat.MODID, "attack_sound");
+        public static Identifier ID = new Identifier(BetterCombatMod.ID, "attack_sound");
         public PacketByteBuf write() {
             PacketByteBuf buffer = PacketByteBufs.create();
             buffer.writeDouble(x);
@@ -97,7 +97,7 @@ public class Packets {
     }
 
     public record WeaponRegistrySync(List<String> chunks) {
-        public static Identifier ID = new Identifier(BetterCombat.MODID, "weapon_registry");
+        public static Identifier ID = new Identifier(BetterCombatMod.ID, "weapon_registry");
         public PacketByteBuf write() {
             var buffer = PacketByteBufs.create();
             buffer.writeInt(chunks.size());
@@ -116,7 +116,7 @@ public class Packets {
     }
 
     public record ConfigSync(String json) {
-        public static Identifier ID = new Identifier(BetterCombat.MODID, "config_sync");
+        public static Identifier ID = new Identifier(BetterCombatMod.ID, "config_sync");
 
         public static String serialize(ServerConfig config) {
             var gson = new Gson();

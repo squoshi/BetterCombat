@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin {
-    @ModifyArgs(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupTransforms(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V"))
-    private void modifyArg(Args args) {
+//    @ModifyArgs(method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;setupTransforms(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/client/util/math/MatrixStack;FFF)V"))
+//    private void modifyArg(Args args) {
 //        LivingEntity entity = args.get(0);
 //        Optional<IAnimation> currentAnimation = Optional.empty();
 //        if (entity instanceof FirstPersonAnimator animator) {
@@ -32,5 +32,5 @@ public class LivingEntityRendererMixin {
 //                args.set(3, MathHelper.lerpAngleDegrees(args.get(4), entity.prevHeadYaw, entity.headYaw));
 //            }
 //        }
-    }
+//    }
 }

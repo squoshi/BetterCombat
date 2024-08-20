@@ -1,6 +1,6 @@
 package net.bettercombat.mixin;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.minecraft.enchantment.SweepingEnchantment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,9 +12,9 @@ public class SweepingEnchantmentMixin {
 
     @Inject(method = "getMaxLevel", at = @At("HEAD"), cancellable = true)
     public void getMaxLevel_DisableSweeping(CallbackInfoReturnable<Integer> cir) {
-        if (BetterCombat.config == null
-                || BetterCombat.config.allow_vanilla_sweeping
-                || BetterCombat.config.allow_reworked_sweeping) {
+        if (BetterCombatMod.config == null
+                || BetterCombatMod.config.allow_vanilla_sweeping
+                || BetterCombatMod.config.allow_reworked_sweeping) {
             return;
         }
         cir.setReturnValue(0);

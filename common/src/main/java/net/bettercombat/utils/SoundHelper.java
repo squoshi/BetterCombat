@@ -1,6 +1,6 @@
 package net.bettercombat.utils;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.WeaponAttributes;
 import net.bettercombat.network.Packets;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -87,7 +87,7 @@ public class SoundHelper {
 
     public static void registerSounds() {
         for (var soundKey: soundKeys) {
-            var soundId = new Identifier(BetterCombat.MODID, soundKey);
+            var soundId = new Identifier(BetterCombatMod.ID, soundKey);
             var soundEvent = SoundEvent.of(soundId);
             Registry.register(Registries.SOUND_EVENT, soundId, soundEvent);
         }

@@ -1,6 +1,6 @@
 package net.bettercombat.client;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.Platform;
 import net.bettercombat.client.animation.PlayerAttackAnimatable;
 import net.bettercombat.logic.WeaponRegistry;
@@ -33,12 +33,12 @@ public class ClientNetwork {
             final var packet = Packets.AttackSound.read(buf);
             client.execute(() -> {
                 try {
-                    if (BetterCombatClient.config.weaponSwingSoundVolume == 0) {
+                    if (BetterCombatClientMod.config.weaponSwingSoundVolume == 0) {
                         return;
                     }
 
                     var soundEvent = Registries.SOUND_EVENT.get(new Identifier(packet.soundId()));
-                    var configVolume = BetterCombatClient.config.weaponSwingSoundVolume;
+                    var configVolume = BetterCombatClientMod.config.weaponSwingSoundVolume;
                     var volume = packet.volume() * ((float) Math.min(Math.max(configVolume, 0), 100) / 100F);
                     client.world.playSound(
                             packet.x(),
@@ -63,8 +63,8 @@ public class ClientNetwork {
             var config = Packets.ConfigSync.read(buf);
             // var gson = new Gson();
             // System.out.println("Received server config: " + gson.toJson(config));
-            BetterCombat.config = config;
-            BetterCombatClient.ENABLED = true;
+            BetterCombatMod.config = config;
+            BetterCombatClientMod.ENABLED = true;
         });
     }
 }

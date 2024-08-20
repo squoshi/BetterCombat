@@ -11,9 +11,9 @@ import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.Platform;
-import net.bettercombat.client.BetterCombatClient;
+import net.bettercombat.client.BetterCombatClientMod;
 import net.bettercombat.client.animation.AnimationRegistry;
 import net.bettercombat.client.animation.PlayerAttackAnimatable;
 import net.bettercombat.client.animation.*;
@@ -135,9 +135,9 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity imple
             }
 
             var fadeIn = copy.beginTick;
-            float upswingSpeed = speed / BetterCombat.config.getUpswingMultiplier();
+            float upswingSpeed = speed / BetterCombatMod.config.getUpswingMultiplier();
             float downwindSpeed = (float) (speed *
-                    MathHelper.lerp(Math.max(BetterCombat.config.getUpswingMultiplier() - 0.5, 0) / 0.5, // Choosing value :D
+                    MathHelper.lerp(Math.max(BetterCombatMod.config.getUpswingMultiplier() - 0.5, 0) / 0.5, // Choosing value :D
                     (1F - upswing),                     // Use this value at config `0.5`
                     upswing / (1F - upswing)));         // Use this value at config `1.0`
             attackAnimation.speed.set(upswingSpeed,
@@ -306,9 +306,9 @@ public abstract class AbstractClientPlayerEntityMixin extends PlayerEntity imple
     private FirstPersonConfiguration firstPersonConfig(AnimatedHand animatedHand) {
         // boolean leftHanded = getMainArm() == Arm.LEFT;
         var showRightItem = true;
-        var showLeftItem = BetterCombatClient.config.isShowingOtherHandFirstPerson || animatedHand == AnimatedHand.TWO_HANDED;
-        var showRightArm = showRightItem && BetterCombatClient.config.isShowingArmsInFirstPerson;
-        var showLeftArm = showLeftItem && BetterCombatClient.config.isShowingArmsInFirstPerson;
+        var showLeftItem = BetterCombatClientMod.config.isShowingOtherHandFirstPerson || animatedHand == AnimatedHand.TWO_HANDED;
+        var showRightArm = showRightItem && BetterCombatClientMod.config.isShowingArmsInFirstPerson;
+        var showLeftArm = showLeftItem && BetterCombatClientMod.config.isShowingArmsInFirstPerson;
 
         var config = new FirstPersonConfiguration(showRightArm, showLeftArm, showRightItem, showLeftItem);
         // System.out.println("Animation config: " + config);

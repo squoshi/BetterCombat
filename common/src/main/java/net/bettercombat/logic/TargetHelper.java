@@ -1,6 +1,6 @@
 package net.bettercombat.logic;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Tameable;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
@@ -36,7 +36,7 @@ public class TargetHelper {
         if (target instanceof AbstractDecorationEntity) {
             return Relation.NEUTRAL;
         }
-        var config = BetterCombat.config;
+        var config = BetterCombatMod.config;
         var casterTeam = attacker.getScoreboardTeam();
         var targetTeam = target.getScoreboardTeam();
         if (casterTeam == null || targetTeam == null) {
@@ -61,12 +61,12 @@ public class TargetHelper {
         if (entity instanceof HostileEntity || isEntityHostileVehicle(entity.getName().getString())) {
             return true;
         }
-        return BetterCombat.config.allow_attacking_mount;
+        return BetterCombatMod.config.allow_attacking_mount;
     }
 
     public static boolean isEntityHostileVehicle(String entityName) {
         // An entity is a hostile vehicle via blacklist specifically
-        var config = BetterCombat.config;
+        var config = BetterCombatMod.config;
         return config.hostile_player_vehicles != null
                 && config.hostile_player_vehicles.length > 0
                 && Arrays.asList(config.hostile_player_vehicles).contains(entityName);

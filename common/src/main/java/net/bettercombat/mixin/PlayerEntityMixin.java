@@ -2,7 +2,7 @@ package net.bettercombat.mixin;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.AttackHand;
 import net.bettercombat.api.EntityPlayer_BetterCombat;
 import net.bettercombat.client.animation.PlayerAttackAnimatable;
@@ -49,7 +49,7 @@ public abstract class PlayerEntityMixin implements PlayerAttackProperties, Entit
 
     @ModifyVariable(method = "attack", at = @At("STORE"), ordinal = 3)
     private boolean disableSweeping(boolean value) {
-        if (BetterCombat.config.allow_vanilla_sweeping) {
+        if (BetterCombatMod.config.allow_vanilla_sweeping) {
             return value;
         }
 
@@ -124,7 +124,7 @@ public abstract class PlayerEntityMixin implements PlayerAttackProperties, Entit
                 // Just started dual wielding
                 // Adding speed boost modifier
                 this.dualWieldingAttributeMap = HashMultimap.create();
-                double multiplier = BetterCombat.config.dual_wielding_attack_speed_multiplier - 1;
+                double multiplier = BetterCombatMod.config.dual_wielding_attack_speed_multiplier - 1;
                 dualWieldingAttributeMap.put(
                         EntityAttributes.GENERIC_ATTACK_SPEED,
                         new EntityAttributeModifier(

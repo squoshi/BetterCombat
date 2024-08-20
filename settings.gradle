@@ -7,11 +7,8 @@ pluginManagement {
     }
 }
 
-if (JavaVersion.current().ordinal() + 1 < 17) {
-    throw new IllegalStateException("Please run gradle with Java 17+!")
-}
+rootProject.name = 'bettercombat'
 
-include("common")
-include("fabric")
-include("forge")
-rootProject.name = "bettercombat"
+include 'common'
+include 'fabric'
+include 'neoforge'

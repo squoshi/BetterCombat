@@ -1,6 +1,6 @@
 package net.bettercombat.logic;
 
-import net.bettercombat.BetterCombat;
+import net.bettercombat.BetterCombatMod;
 import net.bettercombat.api.AttackHand;
 import net.bettercombat.api.ComboState;
 import net.bettercombat.api.WeaponAttributes;
@@ -16,8 +16,8 @@ public class PlayerAttackHelper {
     public static float getDualWieldingAttackDamageMultiplier(PlayerEntity player, AttackHand hand) {
         return isDualWielding(player)
                 ? (hand.isOffHand()
-                    ? BetterCombat.config.dual_wielding_off_hand_damage_multiplier
-                    : BetterCombat.config.dual_wielding_main_hand_damage_multiplier)
+                    ? BetterCombatMod.config.dual_wielding_off_hand_damage_multiplier
+                    : BetterCombatMod.config.dual_wielding_main_hand_damage_multiplier)
                 : 1;
     }
 
@@ -42,7 +42,7 @@ public class PlayerAttackHelper {
 
     public static float getAttackCooldownTicksCapped(PlayerEntity player) {
         // `getAttackCooldownProgressPerTick` should be called `getAttackCooldownLengthTicks`
-        return Math.max(player.getAttackCooldownProgressPerTick(), BetterCombat.config.attack_interval_cap);
+        return Math.max(player.getAttackCooldownProgressPerTick(), BetterCombatMod.config.attack_interval_cap);
     }
 
     public static AttackHand getCurrentAttack(PlayerEntity player, int comboCount) {
