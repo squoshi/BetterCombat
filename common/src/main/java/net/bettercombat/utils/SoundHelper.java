@@ -1,10 +1,9 @@
 package net.bettercombat.utils;
 
 import net.bettercombat.BetterCombatMod;
+import net.bettercombat.Platform;
 import net.bettercombat.api.WeaponAttributes;
 import net.bettercombat.network.Packets;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -40,11 +39,11 @@ public class SoundHelper {
             var soundEvent = Registries.SOUND_EVENT.get(new Identifier(sound.id()));
             var distance = soundEvent.getDistanceToTravel(sound.volume());
             var origin = new Vec3d(entity.getX(), entity.getY(), entity.getZ());
-            PlayerLookup.around(world, origin, distance).forEach(serverPlayer -> {
+            Platform.around(world, origin, distance).forEach(serverPlayer -> {
                 var channel = Packets.AttackSound.ID;
                 try {
-                    if (ServerPlayNetworking.canSend(serverPlayer, channel)) {
-                        ServerPlayNetworking.send(serverPlayer, channel, packet.write());
+                    if (Platform.networkS2C_CanSend(serverPlayer, channel)) {
+                        Platform.networkS2C_Send(serverPlayer, packet);
                     }
                 } catch (Exception e){
                     e.printStackTrace();

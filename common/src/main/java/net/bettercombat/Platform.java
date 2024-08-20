@@ -2,6 +2,7 @@ package net.bettercombat;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -41,6 +42,11 @@ public class Platform {
     // MARK: Network hooks
 
     @ExpectPlatform
+    public static PacketByteBuf createByteBuffer() {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static Collection<ServerPlayerEntity> tracking(ServerPlayerEntity player) {
         throw new AssertionError();
     }
@@ -56,12 +62,12 @@ public class Platform {
     }
 
     @ExpectPlatform
-    public static void networkS2C_Send(ServerPlayerEntity player, Identifier packetId, CustomPayload payload) {
+    public static void networkS2C_Send(ServerPlayerEntity player, CustomPayload payload) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static void networkC2S_Send(Identifier packetId, CustomPayload payload) {
+    public static void networkC2S_Send(CustomPayload payload) {
         throw new AssertionError();
     }
 }

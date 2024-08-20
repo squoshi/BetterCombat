@@ -27,5 +27,6 @@ public class FabricClientMod implements ClientModInitializer {
         ModelPredicateProviderRegistry.register(new Identifier(BetterCombatMod.ID, "loaded"), (stack, world, entity, seed) -> {
             return 1.0F;
         });
+        FabricClientNetwork.init();
     }
 }

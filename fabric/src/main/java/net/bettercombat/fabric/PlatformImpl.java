@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -31,6 +32,10 @@ public class PlatformImpl {
         return SpellEngineCompatibility.isCastingSpell(player);
     }
 
+    public static PacketByteBuf createByteBuffer() {
+        return PacketByteBufs.create();
+    }
+
     public static Collection<ServerPlayerEntity> tracking(ServerPlayerEntity player) {
         return PlayerLookup.tracking(player);
     }
@@ -43,15 +48,15 @@ public class PlatformImpl {
         return ServerPlayNetworking.canSend(player, packetId);
     }
 
-    public static void networkS2C_Send(ServerPlayerEntity player, Identifier packetId, CustomPayload payload) {
+    public static void networkS2C_Send(ServerPlayerEntity player, CustomPayload payload) {
         var buffer = PacketByteBufs.create();
         payload.write(buffer);
-        ServerPlayNetworking.send(player, packetId, buffer);
+        ServerPlayNetworking.send(player, payload.id(), buffer);
     }
 
-    public static void networkC2S_Send(Identifier packetId, CustomPayload payload) {
+    public static void networkC2S_Send(CustomPayload payload) {
         var buffer = PacketByteBufs.create();
         payload.write(buffer);
-        ClientPlayNetworking.send(packetId, buffer);
+        ClientPlayNetworking.send(payload.id(), buffer);
     }
 }

@@ -10,7 +10,6 @@ import net.bettercombat.config.ServerConfig;
 import net.bettercombat.config.ServerConfigWrapper;
 import net.bettercombat.logic.WeaponAttributesFallback;
 import net.bettercombat.logic.WeaponRegistry;
-import net.bettercombat.network.ServerNetwork;
 import net.minecraft.server.MinecraftServer;
 import net.tinyconfig.ConfigManager;
 import org.slf4j.Logger;
@@ -33,7 +32,6 @@ public class BetterCombatMod {
         config = AutoConfig.getConfigHolder(ServerConfigWrapper.class).getConfig().server;
         loadFallbackConfig();
         CompatibilityFlags.initialize();
-        ServerNetwork.initializeHandlers();
     }
 
     private static void loadFallbackConfig() {

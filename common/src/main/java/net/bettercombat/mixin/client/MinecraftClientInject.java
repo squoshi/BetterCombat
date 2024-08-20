@@ -1,8 +1,8 @@
 package net.bettercombat.mixin.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.bettercombat.BetterCombatMod;
+import net.bettercombat.Platform;
 import net.bettercombat.PlatformClient;
 import net.bettercombat.api.AttackHand;
 import net.bettercombat.api.MinecraftClient_BetterCombat;
@@ -16,12 +16,10 @@ import net.bettercombat.config.ClientConfigWrapper;
 import net.bettercombat.logic.*;
 import net.bettercombat.network.Packets;
 import net.bettercombat.utils.PatternMatching;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.resource.language.I18n;
@@ -29,6 +27,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -56,55 +55,18 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
 
     @Shadow public int attackCooldown;
 
+    @Shadow @Final public InGameHud inGameHud;
+
     private MinecraftClient thisClient() {
         return (MinecraftClient)((Object)this);
     }
     private boolean isHoldingAttackInput = false;
     private boolean isHarvesting = false;
-    private String textToRender = null;
-    private int textFade = 0;
-
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void postInit(RunArgs args, CallbackInfo ci) {
-        setupTextRenderer();
-    }
 
     // Targeting the method where all the disconnection related logic is.
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V",at = @At("TAIL"))
     private void disconnect_TAIL(Screen screen, CallbackInfo ci) {
         BetterCombatClientMod.ENABLED = false;
-    }
-
-    private void setupTextRenderer() {
-        HudRenderCallback.EVENT.register((context, f) -> {
-            if (textToRender != null && !textToRender.isEmpty()) {
-                var client = MinecraftClient.getInstance();
-                var textRenderer = client.inGameHud.getTextRenderer();
-                var scaledWidth = client.getWindow().getScaledWidth();
-                var scaledHeight = client.getWindow().getScaledHeight();
-
-                int i = textRenderer.getWidth(textToRender);
-                int j = (scaledWidth - i) / 2;
-                int k = scaledHeight - 59 - 14;
-                int l = 0;
-                if (!client.interactionManager.hasStatusBars()) {
-                    k += 14;
-                }
-                if ((l = (int)((float)this.textFade * 256.0f / 10.0f)) > 255) {
-                    l = 255;
-                }
-                if (l > 0) {
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                    context.fill(j - 2, k - 2, j + i + 2, k + textRenderer.fontHeight + 2, client.options.getTextBackgroundColor(0));
-                    context.drawTextWithShadow(textRenderer, textToRender, j, k, 0xFFFFFF + (l << 24));
-                    RenderSystem.disableBlend();
-                }
-            }
-            if (textFade <= 0) {
-                textToRender = null;
-            }
-        });
     }
 
     // Press to attack
@@ -258,9 +220,8 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         boolean isOffHand = hand.isOffHand();
         var animatedHand = AnimatedHand.from(isOffHand, attributes.isTwoHanded());
         ((PlayerAttackAnimatable) player).playAttackAnimation(animationName, animatedHand, attackCooldownTicksFloat, upswingRate);
-        ClientPlayNetworking.send(
-                Packets.AttackAnimation.ID,
-                new Packets.AttackAnimation(player.getId(), animatedHand, animationName, attackCooldownTicksFloat, upswingRate).write());
+        var packet = new Packets.AttackAnimation(player.getId(), animatedHand, animationName, attackCooldownTicksFloat, upswingRate);
+        Platform.networkC2S_Send(packet);
         BetterCombatClientEvents.ATTACK_START.invoke(handler -> {
             handler.onPlayerAttackStart(player, hand);
         });
@@ -348,12 +309,10 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         if (Keybindings.toggleMineKeyBinding.wasPressed()) {
             BetterCombatClientMod.config.isMiningWithWeaponsEnabled = !BetterCombatClientMod.config.isMiningWithWeaponsEnabled;
             AutoConfig.getConfigHolder(ClientConfigWrapper.class).save();
-            textToRender = I18n.translate(BetterCombatClientMod.config.isMiningWithWeaponsEnabled ?
+
+            var message = I18n.translate(BetterCombatClientMod.config.isMiningWithWeaponsEnabled ?
                     "hud.bettercombat.mine_with_weapons_on" : "hud.bettercombat.mine_with_weapons_off");
-            textFade = 40;
-        }
-        if (textFade > 0) {
-            textFade -= 1;
+            inGameHud.setOverlayMessage(Text.literal(message), false);
         }
     }
 
@@ -386,9 +345,8 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
 
         // Mimic logic of:
         // ClientPlayerInteractionManager.attackEntity(PlayerEntity player, Entity target)
-        ClientPlayNetworking.send(
-                Packets.C2S_AttackRequest.ID,
-                new Packets.C2S_AttackRequest(getComboCount(), player.isSneaking(), player.getInventory().selectedSlot, targets).write());
+        var packet = new Packets.C2S_AttackRequest(getComboCount(), player.isSneaking(), player.getInventory().selectedSlot, targets);
+        Platform.networkC2S_Send(packet);
         for (var target: targets) {
             player.attack(target);
         }
@@ -429,9 +387,8 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
     private void cancelWeaponSwing() {
         var downWind = (int)Math.round(PlayerAttackHelper.getAttackCooldownTicksCapped(player) * (1 - 0.5 * BetterCombatMod.config.upswing_multiplier));
         ((PlayerAttackAnimatable) player).stopAttackAnimation(downWind);
-        ClientPlayNetworking.send(
-                Packets.AttackAnimation.ID,
-                Packets.AttackAnimation.stop(player.getId(), downWind).write());
+        var packet = Packets.AttackAnimation.stop(player.getId(), downWind);
+        Platform.networkC2S_Send(packet);
         upswingStack = null;
         itemUseCooldown = 0;
         setMiningCooldown(0);

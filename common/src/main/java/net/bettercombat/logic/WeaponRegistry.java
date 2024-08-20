@@ -5,13 +5,13 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.mojang.logging.LogUtils;
 import net.bettercombat.BetterCombatMod;
+import net.bettercombat.Platform;
 import net.bettercombat.api.AttributesContainer;
 import net.bettercombat.api.WeaponAttributes;
 import net.bettercombat.api.WeaponAttributesHelper;
 import net.bettercombat.network.Packets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -148,17 +148,18 @@ public class WeaponRegistry {
         }
 
         encodedRegistrations = new Packets.WeaponRegistrySync(chunks);
-        LOGGER.info("Encoded Weapon Attribute registry size (with package overhead): " + encodedRegistrations.write().readableBytes()
+        var buffer = Platform.createByteBuffer();
+        encodedRegistrations.write(buffer);
+        LOGGER.info("Encoded Weapon Attribute registry size (with package overhead): " + buffer.readableBytes()
                 + " bytes (in " + chunks.size() + " string chunks with the size of "  + chunkSize + ")");
     }
 
-    public static void decodeRegistry(PacketByteBuf buffer) {
-        var chunkCount = buffer.readInt();
+    public static void decodeRegistry(Packets.WeaponRegistrySync syncPacket) {
         String json = "";
-        for (int i = 0; i < chunkCount; ++i) {
-            json = json.concat(buffer.readString());
+        for (var chunk : syncPacket.chunks()) {
+            json = json.concat(chunk);
         }
-        LOGGER.info("Decoded Weapon Attribute registry in " + chunkCount + " string chunks");
+        LOGGER.info("Decoded Weapon Attribute registry in " + syncPacket.chunks().size() + " string chunks");
         if (BetterCombatMod.config.weapon_registry_logging) {
             LOGGER.info("Weapon Attribute registry received: " + json);
         }
