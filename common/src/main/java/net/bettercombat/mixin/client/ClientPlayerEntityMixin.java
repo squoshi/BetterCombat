@@ -7,13 +7,18 @@ import net.bettercombat.logic.PlayerAttackProperties;
 import net.bettercombat.utils.MathHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
+    @Shadow @Final protected MinecraftClient client;
+
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick(ZF)V", shift = At.Shift.AFTER))
     private void tickMovement_ModifyInput(CallbackInfo ci) {
         var config = BetterCombat.config;
@@ -55,6 +60,32 @@ public class ClientPlayerEntityMixin {
             }
             clientPlayer.input.movementForward *= multiplier;
             clientPlayer.input.movementSideways *= multiplier;
+        }
+    }
+
+    @Unique
+    private int bettercombat$mTicksActive = 0;
+
+    @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick(ZF)V", shift = At.Shift.AFTER))
+    private void tickMovement_MoveOnAttack(CallbackInfo ci) {
+        var clientPlayer = (ClientPlayerEntity)((Object)this);
+        var client = (MinecraftClient_BetterCombat) MinecraftClient.getInstance();
+        if (client.startedAttack() != null && bettercombat$mTicksActive <= 1) {
+            var yaw = clientPlayer.getYaw();
+            var dis = client.startedAttack().attack().forceMoveDistance();
+            var swingProgress = client.getSwingProgress();
+            var forward = -Math.sin(Math.toRadians(yaw)) * dis * swingProgress;
+            var sideways = Math.cos(Math.toRadians(yaw)) * dis * swingProgress;
+            if (clientPlayer.isOnGround()) clientPlayer.setVelocity(clientPlayer.getVelocity().add(forward, 0, sideways));
+            else {
+                bettercombat$mTicksActive = 0;
+                client.resetStartedAttack();
+            }
+            bettercombat$mTicksActive++;
+            if (bettercombat$mTicksActive > 1) {
+                bettercombat$mTicksActive = 0;
+                client.resetStartedAttack();
+            }
         }
     }
 }

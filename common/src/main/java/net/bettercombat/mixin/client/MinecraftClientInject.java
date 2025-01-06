@@ -63,6 +63,7 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
     private boolean isHarvesting = false;
     private String textToRender = null;
     private int textFade = 0;
+    private AttackHand startedAttack;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void postInit(RunArgs args, CallbackInfo ci) {
@@ -357,7 +358,7 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         }
     }
 
-    private void performAttack() {
+    public void performAttack() {
         if (BetterCombatKeybindings.feintKeyBinding.isPressed()) {
             player.resetLastAttackedTicks();
             cancelWeaponSwing();
@@ -373,19 +374,7 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         }
         // System.out.println("Attack with CD: " + client.player.getAttackCooldownProgress(0));
 
-        if (attack.forceMoveDistance() > 0) {
-            var yaw = player.getYaw();
-            var dis = attack.forceMoveDistance();
-            if (player.isOnGround()) {
-                player.addVelocity(
-                        -Math.sin(Math.toRadians(yaw)) * dis,
-                        0,
-                        Math.cos(Math.toRadians(yaw)) * dis
-                );
-            }
-        }
-
-
+        startedAttack = hand;
         var cursorTarget = getCursorTarget();
         List<Entity> targets = TargetFinder.findAttackTargets(
                 player,
@@ -481,5 +470,15 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         if (upswingTicks > 0) {
             cancelWeaponSwing();
         }
+    }
+
+    @Override
+    public AttackHand startedAttack() {
+        return startedAttack;
+    }
+
+    @Override
+    public void resetStartedAttack() {
+        startedAttack = null;
     }
 }
