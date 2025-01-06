@@ -165,6 +165,8 @@ public final class WeaponAttributes {
 
         private double movement_speed_multiplier = 1;
 
+        private double force_move_distance = 0.0;
+
         /**
          * This empty initializer is needed for GSON, to support parsing over default values
          */
@@ -179,7 +181,8 @@ public final class WeaponAttributes {
                 String animation,
                 Sound swing_sound,
                 Sound impact_sound,
-                double movement_speed_multiplier
+                double movement_speed_multiplier,
+                double force_move_distance
         ) {
             this.conditions = conditions;
             this.hitbox = hitbox;
@@ -190,6 +193,7 @@ public final class WeaponAttributes {
             this.swing_sound = swing_sound;
             this.impact_sound = impact_sound;
             this.movement_speed_multiplier = movement_speed_multiplier;
+            this.force_move_distance = force_move_distance;
         }
 
         @Nullable
@@ -229,6 +233,10 @@ public final class WeaponAttributes {
             return movement_speed_multiplier;
         }
 
+        public double forceMoveDistance() {
+            return force_move_distance;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -241,12 +249,13 @@ public final class WeaponAttributes {
                     Objects.equals(this.animation, that.animation) &&
                     Objects.equals(this.swing_sound, that.swing_sound) &&
                     Objects.equals(this.impact_sound, that.impact_sound) &&
-                    Double.doubleToLongBits(this.movement_speed_multiplier) == Double.doubleToLongBits(that.movement_speed_multiplier);
+                    Double.doubleToLongBits(this.movement_speed_multiplier) == Double.doubleToLongBits(that.movement_speed_multiplier) &&
+                    Double.doubleToLongBits(this.force_move_distance) == Double.doubleToLongBits(that.force_move_distance);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(hitbox, damage_multiplier, angle, upswing, animation, swing_sound, impact_sound, movement_speed_multiplier);
+            return Objects.hash(hitbox, damage_multiplier, angle, upswing, animation, swing_sound, impact_sound, movement_speed_multiplier, force_move_distance);
         }
 
         @Override
@@ -259,7 +268,8 @@ public final class WeaponAttributes {
                     "animation=" + animation + ", " +
                     "swing_sound=" + swing_sound + ", " +
                     "impact_sound=" + impact_sound + ", " +
-                    "movement_speed_multiplier=" + movement_speed_multiplier + ']';
+                    "movement_speed_multiplier=" + movement_speed_multiplier + ", " +
+                    "force_move_distance=" + force_move_distance + ']';
         }
     }
 
@@ -311,22 +321,6 @@ public final class WeaponAttributes {
          * Fulfilled if the player is not riding any entity
          */
         NOT_MOUNTED,
-        /**
-         * Fulfilled if the player is in the air
-         */
-        IN_AIR,
-        /**
-         * Fulfilled if the player is on the ground
-         */
-        ON_GROUND,
-        /**
-         * Fulfilled if the player is sprinting
-         */
-        SPRINTING,
-        /**
-         * Fulfilled if the player is not sprinting
-         */
-        NOT_SPRINTING,
     }
 
     /**

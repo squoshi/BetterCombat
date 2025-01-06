@@ -149,18 +149,6 @@ public class PlayerAttackHelper {
             case NOT_MOUNTED -> {
                 return player.getVehicle() == null;
             }
-            case IN_AIR -> {
-                return !player.isOnGround();
-            }
-            case ON_GROUND -> {
-                return player.isOnGround();
-            }
-            case SPRINTING -> {
-                return player.isSprinting();
-            }
-            case NOT_SPRINTING -> {
-                return !player.isSprinting();
-            }
         }
         return true;
     }

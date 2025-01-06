@@ -373,6 +373,19 @@ public abstract class MinecraftClientInject implements MinecraftClient_BetterCom
         }
         // System.out.println("Attack with CD: " + client.player.getAttackCooldownProgress(0));
 
+        if (attack.forceMoveDistance() > 0) {
+            var yaw = player.getYaw();
+            var dis = attack.forceMoveDistance();
+            if (player.isOnGround()) {
+                player.addVelocity(
+                        -Math.sin(Math.toRadians(yaw)) * dis,
+                        0,
+                        Math.cos(Math.toRadians(yaw)) * dis
+                );
+            }
+        }
+
+
         var cursorTarget = getCursorTarget();
         List<Entity> targets = TargetFinder.findAttackTargets(
                 player,

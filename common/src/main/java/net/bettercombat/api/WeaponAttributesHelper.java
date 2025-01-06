@@ -28,7 +28,7 @@ public class WeaponAttributesHelper {
             for(int i = 0; i < b.attacks().length; ++i) {
                 var base = (a.attacks() != null && a.attacks().length > i)
                         ? a.attacks()[i]
-                        : new WeaponAttributes.Attack(null, null, 0, 0, 0, null, null, null, -1);
+                        : new WeaponAttributes.Attack(null, null, 0, 0, 0, null, null, null, -1, 0);
                 var override = b.attacks()[i];
                 var attack = new WeaponAttributes.Attack(
                         override.conditions() != null ? override.conditions() : base.conditions(),
@@ -39,7 +39,8 @@ public class WeaponAttributesHelper {
                         override.animation() != null ? override.animation() : base.animation(),
                         override.swingSound() != null ? override.swingSound() : base.swingSound(),
                         override.impactSound() != null ? override.impactSound() : base.impactSound(),
-                        override.movementSpeedMultiplier() != -1 ? override.movementSpeedMultiplier() : base.movementSpeedMultiplier());
+                        override.movementSpeedMultiplier() != -1 ? override.movementSpeedMultiplier() : base.movementSpeedMultiplier(),
+                        override.forceMoveDistance() != 0 ? override.forceMoveDistance() : base.forceMoveDistance());
                 overrideAttacks.add(attack);
             }
             attacks = overrideAttacks.toArray(new WeaponAttributes.Attack[0]);
@@ -83,6 +84,9 @@ public class WeaponAttributesHelper {
         }
         if (attack.movementSpeedMultiplier() < -1) {
             throw new InvalidObjectException("Invalid `movement_speed_multiplier`");
+        }
+        if (attack.forceMoveDistance() < 0) {
+            throw new InvalidObjectException("Invalid `force_move_distance`");
         }
     }
 

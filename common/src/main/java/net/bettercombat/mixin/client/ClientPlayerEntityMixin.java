@@ -38,6 +38,9 @@ public class ClientPlayerEntityMixin {
         if (multiplier == 1 && attackMovementMultiplier == 1.0) {
             return;
         }
+        if (client.getUpswingTicks() == 0) {
+            multiplier *= attackMovementMultiplier;
+        }
         if (swingProgress < 0.98) {
             if (config.movement_speed_applied_smoothly) {
                 double p2 = 0;
@@ -50,8 +53,8 @@ public class ClientPlayerEntityMixin {
 //                var chart = "-".repeat((int)(100.0 * multiplier)) + "x";
 //                System.out.println("Movement speed multiplier: " + String.format("%.4f", multiplier) + ">" + chart);
             }
-            clientPlayer.input.movementForward *= multiplier * attackMovementMultiplier;
-            clientPlayer.input.movementSideways *= multiplier * attackMovementMultiplier;
+            clientPlayer.input.movementForward *= multiplier;
+            clientPlayer.input.movementSideways *= multiplier;
         }
     }
 }
