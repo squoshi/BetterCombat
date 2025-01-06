@@ -2,6 +2,8 @@ package net.bettercombat.mixin.client;
 
 import net.bettercombat.BetterCombat;
 import net.bettercombat.api.MinecraftClient_BetterCombat;
+import net.bettercombat.logic.PlayerAttackHelper;
+import net.bettercombat.logic.PlayerAttackProperties;
 import net.bettercombat.utils.MathHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -15,17 +17,27 @@ public class ClientPlayerEntityMixin {
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/input/Input;tick(ZF)V", shift = At.Shift.AFTER))
     private void tickMovement_ModifyInput(CallbackInfo ci) {
         var config = BetterCombat.config;
-        var multiplier = Math.min(Math.max(config.movement_speed_while_attacking, 0.0), 1.0);
-//        System.out.println("Multiplier " + multiplier);
-        if (multiplier == 1) {
-            return;
-        }
+        var client = (MinecraftClient_BetterCombat) MinecraftClient.getInstance();
         var clientPlayer = (ClientPlayerEntity)((Object)this);
         if (clientPlayer.hasVehicle() && !config.movement_speed_effected_while_mounting) {
             return;
         }
-        var client = (MinecraftClient_BetterCombat) MinecraftClient.getInstance();
         var swingProgress = client.getSwingProgress();
+
+        var comboCount = ((PlayerAttackProperties) clientPlayer).getComboCount();
+        var attack = PlayerAttackHelper.getCurrentAttack(clientPlayer, comboCount - 1);
+        if (attack == null) {
+            return;
+        }
+        var attackMovementMultiplier = attack.attack().movementSpeedMultiplier();
+        if (attackMovementMultiplier == -1) {
+            attackMovementMultiplier = 1.0;
+        }
+        var multiplier = Math.min(Math.max(config.movement_speed_while_attacking, 0.0), 1.0);
+//        System.out.println("Multiplier " + multiplier);
+        if (multiplier == 1 && attackMovementMultiplier == 1.0) {
+            return;
+        }
         if (swingProgress < 0.98) {
             if (config.movement_speed_applied_smoothly) {
                 double p2 = 0;
@@ -38,8 +50,8 @@ public class ClientPlayerEntityMixin {
 //                var chart = "-".repeat((int)(100.0 * multiplier)) + "x";
 //                System.out.println("Movement speed multiplier: " + String.format("%.4f", multiplier) + ">" + chart);
             }
-            clientPlayer.input.movementForward *= multiplier;
-            clientPlayer.input.movementSideways *= multiplier;
+            clientPlayer.input.movementForward *= multiplier * attackMovementMultiplier;
+            clientPlayer.input.movementSideways *= multiplier * attackMovementMultiplier;
         }
     }
 }

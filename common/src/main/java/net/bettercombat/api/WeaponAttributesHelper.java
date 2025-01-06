@@ -28,7 +28,7 @@ public class WeaponAttributesHelper {
             for(int i = 0; i < b.attacks().length; ++i) {
                 var base = (a.attacks() != null && a.attacks().length > i)
                         ? a.attacks()[i]
-                        : new WeaponAttributes.Attack(null, null, 0, 0, 0, null, null, null);
+                        : new WeaponAttributes.Attack(null, null, 0, 0, 0, null, null, null, -1);
                 var override = b.attacks()[i];
                 var attack = new WeaponAttributes.Attack(
                         override.conditions() != null ? override.conditions() : base.conditions(),
@@ -38,7 +38,8 @@ public class WeaponAttributesHelper {
                         override.upswing() != 0 ? override.upswing() : base.upswing(),
                         override.animation() != null ? override.animation() : base.animation(),
                         override.swingSound() != null ? override.swingSound() : base.swingSound(),
-                        override.impactSound() != null ? override.impactSound() : base.impactSound());
+                        override.impactSound() != null ? override.impactSound() : base.impactSound(),
+                        override.movementSpeedMultiplier() != -1 ? override.movementSpeedMultiplier() : base.movementSpeedMultiplier());
                 overrideAttacks.add(attack);
             }
             attacks = overrideAttacks.toArray(new WeaponAttributes.Attack[0]);
@@ -79,6 +80,9 @@ public class WeaponAttributesHelper {
         }
         if (attack.animation() == null || attack.animation().length() == 0) {
             throw new InvalidObjectException("Undefined `animation`");
+        }
+        if (attack.movementSpeedMultiplier() < -1) {
+            throw new InvalidObjectException("Invalid `movement_speed_multiplier`");
         }
     }
 

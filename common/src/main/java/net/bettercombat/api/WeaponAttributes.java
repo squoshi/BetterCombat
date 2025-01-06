@@ -163,6 +163,8 @@ public final class WeaponAttributes {
          */
         private Sound impact_sound = null;
 
+        private double movement_speed_multiplier = 1;
+
         /**
          * This empty initializer is needed for GSON, to support parsing over default values
          */
@@ -176,7 +178,8 @@ public final class WeaponAttributes {
                 double upswing,
                 String animation,
                 Sound swing_sound,
-                Sound impact_sound
+                Sound impact_sound,
+                double movement_speed_multiplier
         ) {
             this.conditions = conditions;
             this.hitbox = hitbox;
@@ -186,6 +189,7 @@ public final class WeaponAttributes {
             this.animation = animation;
             this.swing_sound = swing_sound;
             this.impact_sound = impact_sound;
+            this.movement_speed_multiplier = movement_speed_multiplier;
         }
 
         @Nullable
@@ -221,6 +225,10 @@ public final class WeaponAttributes {
             return impact_sound;
         }
 
+        public double movementSpeedMultiplier() {
+            return movement_speed_multiplier;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if (obj == this) return true;
@@ -232,12 +240,13 @@ public final class WeaponAttributes {
                     Double.doubleToLongBits(this.upswing) == Double.doubleToLongBits(that.upswing) &&
                     Objects.equals(this.animation, that.animation) &&
                     Objects.equals(this.swing_sound, that.swing_sound) &&
-                    Objects.equals(this.impact_sound, that.impact_sound);
+                    Objects.equals(this.impact_sound, that.impact_sound) &&
+                    Double.doubleToLongBits(this.movement_speed_multiplier) == Double.doubleToLongBits(that.movement_speed_multiplier);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(hitbox, damage_multiplier, angle, upswing, animation, swing_sound, impact_sound);
+            return Objects.hash(hitbox, damage_multiplier, angle, upswing, animation, swing_sound, impact_sound, movement_speed_multiplier);
         }
 
         @Override
@@ -249,7 +258,8 @@ public final class WeaponAttributes {
                     "upswing=" + upswing + ", " +
                     "animation=" + animation + ", " +
                     "swing_sound=" + swing_sound + ", " +
-                    "impact_sound=" + impact_sound + ']';
+                    "impact_sound=" + impact_sound + ", " +
+                    "movement_speed_multiplier=" + movement_speed_multiplier + ']';
         }
     }
 
